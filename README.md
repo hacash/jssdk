@@ -1,2 +1,2 @@
 # jssdk
-Hacash SDK for javascript
+Hacash JS_SDK && Web_Wallet for javascript
