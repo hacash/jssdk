@@ -2,19 +2,99 @@
 <html lang="en" >
     <head >
         <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
         <title>Hacash Web Offline Wallet</title>
-        <link rel="stylesheet" href='lib/index.css'>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        
+        <link rel="stylesheet" href='./lib/index.css'>
+
+        <!--code-insert-->
 
     </head>
     <body>
 
+        <div id="init"><div class="container">
+            <div class="load">
+                <div class="loading">
+                    <b></b><b></b><b></b><b></b><b></b>
+                </div>
+                <div class="progress">
+                    <div class="bar"></div>
+                </div>
+                <h5>Waiting for Hacash Web Wallet loading...</h5>
+            </div>
+            <div class="finish">✔ Hacash Wallet loaded completely, now available for use.</div>
+        </div></div>
+
+        <div id="pgtt" class="pgw"><div class="container">
+            <h1>Hacash Web Wallet</h1>
+            <p>Available both online & offline</p>
+        </div></div>
+
+        <div id="acc" class="pgw"><div class="container">
+            <div class="ptt"><h1>❏ Create Account</h1></div>
+            <div class="note">
+                <p>Generate a private key through a private password and create a address (Note: please keep remember your password or private key, once the password or private key is lost, the funds in the account will be permanently lost)<br>This program will not back up, store or disclose your password or private key.</p>
+                <p>If the password is empty, the private key will be created randomly</p>
+                <p class="warning">Warning: a password that is too simple is not secure (for example, 123456 or birthday), and may be guessed and stolen by others.<br>Be sure to use a password that contains a combination of uppercase and lowercase letters, numbers, and special characters of not less than 16 digits.</p>
+            </div>
+            <div class="input">
+                <label>PrivateKey or Password:</label>
+                <textarea class="ipt1" placeholder="support case sensitive letters, numbers, symbols ~! @ # $%^&*_ +-=,.:;, no spaces, Chinese and Chinese symbols, no less than 6, no more than 255"></textarea>
+                <p class="nt"></p>
+            </div>
+            <div class="btns">  
+                <button class="btn1">Create randomly</button>
+                <button class="green ban btn2">Create by Password</button>
+            </div>
+            <div class="result">
+                <h5 class="tt">Account created successfully! <span class="mark">( by randomly )</span></h5>
+                <p class="li"><label>Address:</label> <b class="addr">1L9kUkNieKUFCHe46hTNqX17WhEBbFg8Gc</b><i class="green">Show to others, for collection</i></p>
+                <p class="li"><label>PublicKey:</label> <b class="pubkey">02f18c0c3f2839cff0a50afe2a8d60c322f5283aca6464464517e199b4190f1a5d</b><i></i></p>
+                <p class="li"><label>PrivateKey:</label> <b class="prikey">aa7e8946b1faf87b379e8ad967dfb187b8178a0486636a085c49584bde2ea73f</b><i>Do not divulge, or the assets will be stolen and lost, and will never be recovered</i></p>
+            </div>
+
+        </div></div>
+
+
+        <div id="hactrs" class="pgw"><div class="container">
+            <div class="ptt"><h1>❏ HAC Transfer</h1></div>
+            <div class="input">
+                <label>Payment PrivateKey or Password:</label>
+                <input class="ipt1" placeholder=""></textarea>
+            </div>
+            <div class="input">
+                <label>Collection Address:</label>
+                <input class="ipt2" placeholder="format: '1MzNY1oA3kfgYi75zquj3SRUPYztzXHzK9'"></textarea>
+            </div>
+            <div class="input">
+                <label>Transfer Amount:</label>
+                <input class="ipt3" placeholder="format: '1:246', '1:249'or '0.01', '10'"></textarea>
+            </div>
+            <div class="btns">
+                <button class="btn1">Create Transaction</button>
+            </div>
+            
+
+        </div></div>
 
 
 
+        <div id="test"><div class="container">
+        </div></div>
 
-        <script src="lib/wasm_exec.js" type="text/javascript"></script>
-        <script src="lib/index.js" type="text/javascript"></script>
-        <script src="lib/hacash_sdk.js" type="text/javascript"></script>
+
+        <script src="./lib/wasm_exec.js" type="text/javascript"></script>
+
+        <script src="./lib/jszip.min.js" type="text/javascript"></script>
+        <script src="./lib/hacash_sdk_download.js" type="text/javascript"></script>
+<!--        <script src="./lib/hacash_sdk.js" type="text/javascript"></script>-->
+
+        <script src="./lib/index.js" type="text/javascript"></script>
+
+        <!--code-insert-->
 
     </body>
 </html>

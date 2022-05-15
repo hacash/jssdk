@@ -1,19 +1,10 @@
 package wasmsdk
 
 import (
-	"encoding/hex"
 	"github.com/hacash/core/account"
 	"syscall/js"
 )
 
-func retAcc(acc *account.Account) interface{} {
-	v := js.ValueOf(map[string]interface{}{
-		"Address":    acc.AddressReadable,
-		"PublicKey":  hex.EncodeToString(acc.PublicKey),
-		"PrivateKey": hex.EncodeToString(acc.PrivateKey),
-	})
-	return v
-}
 
 func AccountSDK() {
 
