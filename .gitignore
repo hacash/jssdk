@@ -1,7 +1,8 @@
 *.wasm
 *_sdk.js
-webwallet/lib/wasm_exec.js
-
+*_sdk_tny.js
+webwallet/lib/wasm_exec*.js
+*.zip
 
 
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -22,13 +23,13 @@ func copyFile(srcFile, destFile string) (int64, error) {
 	return io.Copy(file2, file1)
 }
 
-func main() {
+func build(usetinyfix string) {
 
 	pwd, _ := os.Getwd()
 	fmt.Println("pwd work dir:", pwd)
 
 	// ad wasm file
-	wasmFileName := "./dist/hacash_sdk.wasm"
+	wasmFileName := "./dist/hacash_sdk" + usetinyfix + ".wasm"
 	wfp := path.Join(pwd, wasmFileName)
 	wasm, e := os.ReadFile(wfp)
 	if e != nil {
@@ -51,18 +52,31 @@ func main() {
 		var go = new Go();
 		var instance = new WebAssembly.Instance(new WebAssembly.Module(base64ToBuffer(hacashwasmcode)), go.importObject); 
 		go.run(instance);
-		hacash_wallet_main();
+		hacash_wallet_main(instance.exports);
 	`
 
-	file1 := path.Join(pwd, "./webwallet/lib/hacash_sdk.js")
-	os.WriteFile(file1, []byte(wasmJsContent), os.ModePerm)
-	fmt.Printf("create => %s\n", file1)
+	sdk1 := path.Join(pwd, "./webwallet/lib/hacash_sdk.js")
+	os.WriteFile(sdk1, []byte(wasmJsContent), os.ModePerm)
+	fmt.Printf("create %s => %s\n", wfp, sdk1)
 
 	// copy ./dist/wasm_exec.js
-	file2 := path.Join(pwd, "./webwallet/lib/wasm_exec.js")
-	copyFile(path.Join(pwd, "./dist/wasm_exec.js"), file2)
-	fmt.Printf("copy => %s\n", file2)
+	exec1 := path.Join(pwd, "./dist/wasm_exec"+usetinyfix+".js")
+	exec2 := path.Join(pwd, "./webwallet/lib/wasm_exec.js")
+	copyFile(exec1, exec2)
+	fmt.Printf("copy %s => %s\n", exec1, exec2)
 
 	fmt.Println("build successfully!")
 
+}
+
+func main() {
+
+	tiny := flag.Bool("tiny", false, "use tinygo")
+	flag.Parse()
+	if *tiny {
+		fmt.Println("[Use tinygo compiling]")
+		build("_tiny")
+	} else {
+		build("")
+	}
 }
