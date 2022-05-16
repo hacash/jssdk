@@ -47,6 +47,7 @@ func buildSingleHTML() {
 	// split & insert js code
 	htmlstr := string(html)
 	htmlstr = strings.Replace(htmlstr, `<link rel=\"stylesheet\" href='./lib/index.css'>`, "", 1)
+	htmlstr = strings.Replace(htmlstr, `<script src="/jslib/axios.min.js" type="text/javascript"></script>`, "", 1)
 	htmlstr = strings.Replace(htmlstr, `<script src="./lib/wasm_exec.js" type="text/javascript"></script>`, "", 1)
 	htmlstr = strings.Replace(htmlstr, `<script src="./lib/hacash_sdk.js" type="text/javascript"></script>`, "", 1)
 	htmlstr = strings.Replace(htmlstr, `<script src="./lib/index.js" type="text/javascript"></script>`, "", 1)
@@ -63,17 +64,22 @@ func buildSingleHTML() {
 	// <!--code-insert-->
 	resultHTML[2] = htmlstrAry[1]
 
+
+	// axios.min.js
+	//js1 := readFileMust("./webwallet/lib/axios.min.js")
+	//resultHTML[3] = "<script>" + string(js1) + "</script>"
+
 	// wasm_exec.js
-	js1 := readFileMust("./webwallet/lib/wasm_exec.js")
-	resultHTML[3] = "<script>" + string(js1) + "</script>"
+	js2 := readFileMust("./webwallet/lib/wasm_exec.js")
+	resultHTML[3] = "<script>" + string(js2) + "</script>"
 
 	// hacash_sdk.js
-	js2 := readFileMust("./webwallet/lib/hacash_sdk.js")
-	resultHTML[4] = "<script>" + string(js2) + "</script>"
+	js3 := readFileMust("./webwallet/lib/hacash_sdk.js")
+	resultHTML[4] = "<script>" + string(js3) + "</script>"
 
 	// index.js
-	js3 := readFileMust("./webwallet/lib/index.js")
-	resultHTML[5] = "<script>" + string(js3) + "</script>"
+	js4 := readFileMust("./webwallet/lib/index.js")
+	resultHTML[5] = "<script>" + string(js4) + "</script>"
 
 	// <!--code-insert-->
 	resultHTML[6] = htmlstrAry[2]

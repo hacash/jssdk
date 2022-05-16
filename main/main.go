@@ -30,6 +30,7 @@ func main() {
 
 	wasmsdk.AccountSDK()
 	wasmsdk.HacTransferSDK()
+	wasmsdk.HacdTransferSDK()
 
 	select {}
 }

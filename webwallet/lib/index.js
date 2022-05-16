@@ -1,9 +1,14 @@
 // test
 // document.getElementById("init").className = "ok";
 
+// getElementsByClassName one
+function $cno(a, n) {
+    return a.getElementsByClassName(n)[0]
+}
+
 var $init = document.getElementById("init")
-, $init_progress = $init.getElementsByClassName("progress")[0]
-, $init_bar = $init_progress.getElementsByClassName("bar")[0]
+, $init_progress = $cno($init, "progress")
+, $init_bar = $cno($init_progress, "bar")
 ;
 
 // loading progress
@@ -34,6 +39,16 @@ if(!WebAssembly || !WebAssembly.Instance || !WebAssembly.Module) {
 }
 
 
+/**
+ * CreateNewRandomAccount
+ * GetAccountByPrivateKeyOrPassword
+ * CreateHacTransfer
+ * CreateHacdTransfer
+ * 
+ * 
+ */
+
+
 // start
 function hacash_wallet_main(wasm){
     if(!WebAssemblyIsOK){
@@ -50,18 +65,227 @@ function hacash_wallet_main(wasm){
 
     // init
     init_create_account()
+    init_hac_transfer()
+    init_hacd_transfer()
 
     // loading ok
     $init.className = "ok";
 
 }
 
+// hacd transfer
+function init_hacd_transfer() {
+    var $acc = document.getElementById("hacdtrs")
+    , $ipt1 = $cno($acc, "ipt1")
+    , $ipt2 = $cno($acc, "ipt2")
+    , $ipt3 = $cno($acc, "ipt3")
+    , $ipt4 = $cno($acc, "ipt4")
+    , $ipt5 = $cno($acc, "ipt5")
+    , $btn1 = $cno($acc, "btn1")
+    , $btn2 = $cno($acc, "btn2")
+    , $btn3 = $cno($acc, "btn3")
+    , $offline = $cno($acc, "offline")
+    , $success = $cno($acc, "success")
+    , $box1 = $cno($acc, "box1")
+    , $box2 = $cno($acc, "box2")
+    , confirmTip = ""
+    , txhash = ""
+    , txbody = ""
+    ;
+
+    // 非在线模式
+    if(window.location.host != "wallet.hacash.org") {
+        $btn3.style.display = "none" // 隐藏提交交易按钮
+        $offline.style.display = "block"
+    }
+
+    // submit tx
+    $btn3.onclick = function() {
+        if($btn3.classList.contains("ban")){
+            return
+        }
+        if( !confirm(confirmTip + "\n\nOnce a transaction is committed to the blockchain, is it irreversible, Are you sure to submit?") ){
+           return 
+        }
+        // 提交
+        $btn3.classList.add("ban")
+        // post
+        axios.post("/api/send_tx", {
+            txbody: txbody,
+        }).then(function(r){
+            $btn3.classList.remove("ban")
+            console.log(r.data)
+            if(r.data.ret == 0){
+                $btn3.style.display = "none"
+                $success.style.display = "block"
+                $cno($success, "hx").innerText = txhash
+            }else{
+                alert(r.data.msg)
+            }
+        }).catch(function(e){
+            $btn3.classList.remove("ban")
+            alert(e.toString())
+        })
+    }
+
+    // set tx body
+    function genTx(tx) {
+        var a1 = tx.PaymentAddress
+        , a2 = tx.CollectionAddress
+        $cno($box2, "pay").innerText = a1
+        $cno($box2, "get").innerText = a2
+        $cno($box2, "num").innerText = tx.DiamondCount
+        $cno($box2, "amt").innerText = tx.Diamonds
+        $cno($box2, "fee").innerText = tx.Fee
+        $cno($box2, "txhx").innerText = tx.TxHash
+        $cno($box2, "txbody").innerText = tx.TxBody
+        $box2.style.display = "block";
+        $box1.style.display = "none";
+        confirmTip = "Payment account " + a1 + " transfer HAC " + tx.Amount + " to address " + a2 + " (fee: "+tx.Fee+")"
+        txhash = tx.TxHash
+        txbody = tx.TxBody
+    }
+
+    // back
+    $btn2.onclick = function(){
+        $box1.style.display = "block";
+        $box2.style.display = "none";
+        $ipt1.value = "" // del password
+    }
+
+    // create tx
+    $btn1.onclick = function(){
+        var v1 = $ipt1.value
+        , v2 = $ipt2.value
+        , v3 = $ipt3.value
+        , v4 = $ipt4.value
+        , v5 = $ipt5.value
+        ;
+        if(v1.length >= 6 && v2.length>=32 && v2.length<=34 && v3.length>=6 && v4.length>0 && v5.length>0){}else{
+            return alert("please fill the form correctly.")
+        }
+        // 创建交易
+        var ret = CreateHacdTransfer(v1, v2, v3, v4, v5)
+        console.log(ret)
+        if(ret.Error) {
+            return alert(ret.Error)
+        }
+        if(ret.Diamonds) {
+            genTx(ret)
+        }
+    }
+
+}
+
+
+// hac transfer
+function init_hac_transfer() {
+    var $acc = document.getElementById("hactrs")
+    , $ipt1 = $cno($acc, "ipt1")
+    , $ipt2 = $cno($acc, "ipt2")
+    , $ipt3 = $cno($acc, "ipt3")
+    , $ipt4 = $cno($acc, "ipt4")
+    , $btn1 = $cno($acc, "btn1")
+    , $btn2 = $cno($acc, "btn2")
+    , $btn3 = $cno($acc, "btn3")
+    , $offline = $cno($acc, "offline")
+    , $success = $cno($acc, "success")
+    , $box1 = $cno($acc, "box1")
+    , $box2 = $cno($acc, "box2")
+    , confirmTip = ""
+    , txhash = ""
+    , txbody = ""
+    ;
+
+    // 非在线模式
+    if(window.location.host != "wallet.hacash.org") {
+        $btn3.style.display = "none" // 隐藏提交交易按钮
+        $offline.style.display = "block"
+    }
+
+    // submit tx
+    $btn3.onclick = function() {
+        if($btn3.classList.contains("ban")){
+            return
+        }
+        if( !confirm(confirmTip + "\n\nOnce a transaction is committed to the blockchain, is it irreversible, Are you sure to submit?") ){
+           return 
+        }
+        // 提交
+        $btn3.classList.add("ban")
+        // post
+        axios.post("/api/send_tx", {
+            txbody: txbody,
+        }).then(function(r){
+            $btn3.classList.remove("ban")
+            console.log(r.data)
+            if(r.data.ret == 0){
+                $btn3.style.display = "none"
+                $success.style.display = "block"
+                $cno($success, "hx").innerText = txhash
+            }else{
+                alert(r.data.msg)
+            }
+        }).catch(function(e){
+            $btn3.classList.remove("ban")
+            alert(e.toString())
+        })
+    }
+
+    // set tx body
+    function genTx(tx) {
+        var a1 = tx.PaymentAddress
+        , a2 = tx.CollectionAddress
+        $cno($box2, "pay").innerText = a1
+        $cno($box2, "get").innerText = a2
+        $cno($box2, "amt").innerText = tx.Amount
+        $cno($box2, "fee").innerText = tx.Fee
+        $cno($box2, "txhx").innerText = tx.TxHash
+        $cno($box2, "txbody").innerText = tx.TxBody
+        $box2.style.display = "block";
+        $box1.style.display = "none";
+        confirmTip = "Payment account " + a1 + " transfer HAC " + tx.Amount + " to address " + a2 + " (fee: "+tx.Fee+")"
+        txhash = tx.TxHash
+        txbody = tx.TxBody
+    }
+
+    // back
+    $btn2.onclick = function(){
+        $box1.style.display = "block";
+        $box2.style.display = "none";
+        $ipt1.value = "" // del password
+    }
+
+    // create tx
+    $btn1.onclick = function(){
+        var v1 = $ipt1.value
+        , v2 = $ipt2.value
+        , v3 = $ipt3.value
+        , v4 = $ipt4.value
+        ;
+        if(v1.length >= 6 && v2.length>=32 && v2.length<=34 && v3.length>0 && v4.length>0){}else{
+            return alert("please fill the form correctly.")
+        }
+        // 创建交易
+        var ret = CreateHacTransfer(v1, v2, v3, v4)
+        console.log(ret)
+        if(ret.Error) {
+            return alert(ret.Error)
+        }
+        if(ret.Amount) {
+            genTx(ret)
+        }
+    }
+
+}
+
+
 // create account
 function init_create_account() {
     var $acc = document.getElementById("acc")
-    , $ipt1 = $acc.getElementsByClassName("ipt1")[0]
-    , $btn1 = $acc.getElementsByClassName("btn1")[0]
-    , $btn2 = $acc.getElementsByClassName("btn2")[0]
+    , $ipt1 = $cno($acc, "ipt1")
+    , $btn1 = $cno($acc, "btn1")
+    , $btn2 = $cno($acc, "btn2")
 
     var in1chg = function(){
         var v = $ipt1.value
@@ -77,12 +301,12 @@ function init_create_account() {
     $ipt1.onchange = in1chg
     // result
     var result = function(acc, usepass) {
-        var $res = $acc.getElementsByClassName("result")[0]
-        , $mark = $res.getElementsByClassName("mark")[0]
-        , $b1 = $res.getElementsByClassName("addr")[0]
-        , $b2 = $res.getElementsByClassName("pubkey")[0]
-        , $b3 = $res.getElementsByClassName("prikey")[0]
-        ;
+        var $res = $cno($acc, "result")
+        , $mark =  $cno($res, "mark")
+        , $b1 =    $cno($res, "addr")
+        , $b2 =    $cno($res, "pubkey")
+        , $b3 =    $cno($res, "prikey")
+        ;   
         $mark.innerText = '( by '+ (usepass?('password '+usepass):'randomly') +' )'
         $b1.innerText = acc.Address
         $b2.innerText = acc.PublicKey

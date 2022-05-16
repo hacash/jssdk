@@ -44,6 +44,14 @@ button {
         background-color: #53b953;
         border-color: #428d42;
     }
+    &.red {
+        background-color: #c74736;
+        border-color: #9c2313;
+    }
+    &.gray {
+        background-color: #999;
+        border-color: #666;
+    }
     
 }
 div.btns {
@@ -125,6 +133,9 @@ div.btns {
         }
         &>p.nt {
             display: block;
+            font-size: 13px;
+            line-height: 15px;
+            color: #cf974c;
         }
     }
 }
@@ -265,11 +276,108 @@ div.btns {
                     color: #428d42;
                 }
             }
+            .addr {
+                color: #3f9497;
+            }
+            .pubkey {
+                font-weight: normal;
+                color: #666;
+            }
+        }
+    }
+}
+
+.trscommon {
+
+    table {
+        border-spacing: 0;
+        border-collapse: collapse;
+        border: 1px solid #bbb;
+        th, td {
+            border-spacing: 0;
+            border-collapse: collapse;
+            border: 1px solid #bbb;
+            padding: 5px;
+        }
+    }
+
+    .box2 {
+        display: none;
+        text-align: left;
+    }
+
+    .check {
+        overflow-x: scroll;
+        b {
+            font-weight: normal;
+        }
+        b.amt {
+            color: #a10ebe;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        i {
+            font-size: 13px;
+            color: #876;
+        }
+    }
+
+    .tx{  
+        background-color: lavender;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 2px 2px 1px #0003;
+        label {
+            display: block;
+            padding: 5px 0;
+            font-size: 14px;
+            font-weight: bold;
+            color: #3f9497;
+        }
+        p, textarea {
+            display: block;
+        }
+        .txhx {
+            word-break: break-all;
+        }
+        .txbody {
+            width: 100%;
+            min-height: 80px;
+        } 
+        p.tip {
+            color: gray;
+            font-size: 14px;
+            padding: 5px;
+        }
+    }
+    .success {
+        display: none;
+        color: #fff;
+        padding: 30px;
+        padding: 20px;
+        background-color: #428d42;
+        border-radius: 4px;
+        border: #53b953 1px solid;
+    }
+    .offline {
+        display: none;
+        padding: 20px 0;
+        p {
+            color: crimson;
+            font-size: 18px;
+            font-weight: bold;
         }
     }
 }
 
 
+#footer {
+    padding: 40px 0;
+    text-align: center;
+    p {
+        color: #888;
+    }
+}
 
 
 @media screen and (max-width: 600px) {
@@ -312,6 +420,12 @@ div.btns {
                     margin: 0;
                 }
             }
+        }
+    }
+
+    #hactrs {
+        .tx {
+            padding: 5px 8px;
         }
     }
 
