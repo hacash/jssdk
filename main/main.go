@@ -29,6 +29,7 @@ func main() {
 	// hacash js SDKs
 
 	wasmsdk.AccountSDK()
+	wasmsdk.HacTransferSDK()
 
 	select {}
 }
