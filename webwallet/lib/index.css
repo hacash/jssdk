@@ -169,6 +169,20 @@ div.btns > button {
 .loading b:nth-child(5) {
   animation-delay: 0.8s;
 }
+#safetip {
+  padding: 20px;
+}
+#safetip p {
+  color: #dea087;
+  font-size: 14px;
+}
+#safetip p b {
+  font-weight: bold;
+}
+#safetip p a {
+  font-size: 15px;
+  color: #436db9;
+}
 #init .load {
   padding: 10px 0 40px 0;
   background-color: #f7ebde;
