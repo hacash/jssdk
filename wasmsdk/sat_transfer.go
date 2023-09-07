@@ -10,44 +10,49 @@ import (
 	"time"
 )
 
-func HacTransferSDK() {
+func SatTransferSDK() {
 
 	/* CreateHacTransfer */
-	jsGlobalRegFuncPmsString("CreateHacTransfer", func(args []string) interface{} {
-		if len(args) != 5 {
-			return retErr(fmt.Errorf("param num must be 5."))
+	jsGlobalRegFuncPmsString("CreateSatTransfer", func(args []string) interface{} {
+		if len(args) != 6 {
+			return retErr(fmt.Errorf("param num must be 6."))
 		}
 		chain_id, e := strconv.ParseInt(args[0], 10, 64)
 		if e != nil {
 			return retErr(fmt.Errorf("'%s' not a valid chain id.", args[0]))
 		}
-		acc := account.GetAccountByPrivateKeyOrPassword(args[1])
+		payacc := account.GetAccountByPrivateKeyOrPassword(args[1])
 		addr, e := account.CheckReadableAddress(args[2])
 		if e != nil {
 			return retErr(fmt.Errorf("'%s' not a valid Hacash address.", args[2]))
 		}
-		amt, e := fields.NewAmountFromString(args[3])
+		satval, e := strconv.ParseInt(args[3], 10, 64)
 		if e != nil {
 			return retErr(fmt.Errorf("'%s' not a valid transfer amount.", args[3]))
 		}
-		fee, e := fields.NewAmountFromString(args[4])
+		satamt := fields.Satoshi(uint64(satval))
+		feeacc := account.GetAccountByPrivateKeyOrPassword(args[4])
+		fee, e := fields.NewAmountFromString(args[5])
 		if e != nil {
-			return retErr(fmt.Errorf("'%s' not a valid fee amount.", args[4]))
+			return retErr(fmt.Errorf("'%s' not a valid fee amount.", args[5]))
 		}
 		// create tx
 		ctime := time.Now().Unix()
-		tx := transactions.CreateOneTxOfSimpleTransfer(uint64(chain_id), acc, addr, amt, fee, ctime)
+		tx, e := transactions.CreateOneTxOfBTCTransfer(uint64(chain_id), payacc, addr, uint64(satamt), feeacc, fee, ctime)
+		if e != nil {
+			return retErr(fmt.Errorf("CreateOneTxOfBTCTransfer Error: %s", e))
+		}
 		txbody, e := tx.Serialize()
 		if e != nil {
 			return retErr(fmt.Errorf("Create tx error: %s", e.Error()))
 		}
 		// success
 		return retData(map[string]interface{}{
-			"Amount":            amt.ToFinString(),
+			"Amount":            strconv.FormatInt(int64(satamt), 10),
 			"Fee":               fee.ToFinString(),
 			"TxHash":            tx.Hash().ToHex(),
 			"TxBody":            hex.EncodeToString(txbody),
-			"PaymentAddress":    acc.AddressReadable,
+			"PaymentAddress":    payacc.AddressReadable,
 			"CollectionAddress": args[2],
 			"Timestamp":         strconv.FormatInt(ctime, 10),
 		})

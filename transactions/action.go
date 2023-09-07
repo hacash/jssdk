@@ -29,6 +29,8 @@ func NewActionByKind(kind uint16) (interfaces.Action, error) {
 		return new(Action_14_FromToTransfer), nil
 	case 28:
 		return new(Action_28_FromSatoshiTransfer), nil
+	case 30:
+		return new(Action_30_SupportDistinguishForkChainID), nil
 
 	}
 	////////////////////    END      ////////////////////
