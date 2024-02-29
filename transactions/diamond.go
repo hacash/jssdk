@@ -591,3 +591,93 @@ func (elm *Action_6_OutfeeQuantityDiamondTransfer) GetDiamondNamesSplitByComma()
 }
 
 ///////////////////////////////////////////////////////////////////////
+
+// Bulk transfer of diamonds
+type Action_7_MultipleDiamondTransfer struct {
+	ToAddress   fields.Address              // receive address
+	DiamondList fields.DiamondListMaxLen200 // Diamond list
+
+	// Data pointer
+	// Transaction
+	belong_trs    interfacev2.Transaction
+	belong_trs_v3 interfaces.Transaction
+}
+
+func (elm *Action_7_MultipleDiamondTransfer) Kind() uint16 {
+	return 7
+}
+
+func (elm *Action_7_MultipleDiamondTransfer) Size() uint32 {
+	return 2 +
+		elm.ToAddress.Size() +
+		elm.DiamondList.Size() // Each diamond is 6 digits long
+}
+
+// json api
+func (elm *Action_7_MultipleDiamondTransfer) Describe() map[string]interface{} {
+	var data = map[string]interface{}{}
+	return data
+}
+
+func (elm *Action_7_MultipleDiamondTransfer) Serialize() ([]byte, error) {
+	var kindByte = make([]byte, 2)
+	binary.BigEndian.PutUint16(kindByte, elm.Kind())
+	var addrBytes, _ = elm.ToAddress.Serialize()
+	var diaBytes, e = elm.DiamondList.Serialize()
+	if e != nil {
+		return nil, e
+	}
+	var buffer bytes.Buffer
+	buffer.Write(kindByte)
+	buffer.Write(addrBytes)
+	buffer.Write(diaBytes)
+	return buffer.Bytes(), nil
+}
+
+func (elm *Action_7_MultipleDiamondTransfer) Parse(buf []byte, seek uint32) (uint32, error) {
+	var e error = nil
+	seek, e = elm.ToAddress.Parse(buf, seek)
+	if e != nil {
+		return 0, e
+	}
+	seek, e = elm.DiamondList.Parse(buf, seek)
+	if e != nil {
+		return 0, e
+	}
+	return seek, nil
+}
+
+func (elm *Action_7_MultipleDiamondTransfer) RequestSignAddresses() []fields.Address {
+	reqs := make([]fields.Address, 0) // ed from address sign
+	return reqs
+}
+
+func (act *Action_7_MultipleDiamondTransfer) WriteInChainState(state interfaces.ChainStateOperation) error {
+	panic("never call in transactions!")
+}
+
+func (act *Action_7_MultipleDiamondTransfer) WriteinChainState(state interfacev2.ChainStateOperation) error {
+	panic("never call in transactions!")
+}
+
+func (act *Action_7_MultipleDiamondTransfer) RecoverChainState(state interfacev2.ChainStateOperation) error {
+	panic("never call in transactions!")
+}
+
+func (elm *Action_7_MultipleDiamondTransfer) SetBelongTransaction(t interfacev2.Transaction) {
+	elm.belong_trs = t
+}
+
+func (elm *Action_7_MultipleDiamondTransfer) SetBelongTrs(t interfaces.Transaction) {
+	elm.belong_trs_v3 = t
+}
+
+// burning fees  // IsBurning 90 PersentTxFees
+func (act *Action_7_MultipleDiamondTransfer) IsBurning90PersentTxFees() bool {
+	return false
+}
+
+// Get the name list of block diamonds
+func (elm *Action_7_MultipleDiamondTransfer) GetDiamondNamesSplitByComma() string {
+	return elm.DiamondList.SerializeHACDlistToCommaSplitString()
+}
